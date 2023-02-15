@@ -87,6 +87,15 @@ AccountManager.prototype.createAccount = function ({ id, username, password }) {
  * @param {string} id
  * @returns {boolean}
  */
-AccountManager.prototype.deleteAccount = function (id) {};
+AccountManager.prototype.deleteAccount = function (id) {
+  const accountToDelete = this.accounts.findIndex((account) =>{
+    return account.id === id;
+  });
+  if(accountToDelete === -1){
+   return false;
+  }
+  this.accounts.splice(accountToDelete, 1);
+  return true;
+};
 
 export { AccountManager, Account };

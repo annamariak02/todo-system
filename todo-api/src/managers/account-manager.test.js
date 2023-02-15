@@ -1,3 +1,4 @@
+import exp from "constants";
 import { AccountManager, Account } from "./account-manager.js";
 
 describe("Account Manager", () => {
@@ -150,6 +151,40 @@ describe("Account Manager", () => {
         });
 
         expect(account.verifyPassword("wrong password")).toEqual(false);
+      });
+    });
+
+    describe("Account.deleteAccount", () =>{
+      it("should delete account if account exists", () =>{
+        const account = manager.createAccount({
+          id: "50",
+          username: "john.doe",
+          password: "password",
+        });
+        const deleteAcc = manager.deleteAccount("50");
+
+        expect(deleteAcc).toBeTruthy();
+      });
+
+      it("should not delete account that doesn't exist", () =>{
+        const account1 = manager.createAccount({
+          id: "50",
+          username: "john.doe",
+          password: "password",
+        });
+        const account2 = manager.createAccount({
+          id: "100",
+          username: "jane.doe",
+          password: "password",
+        });
+        const account3 = manager.createAccount({
+          id: "69",
+          username: "your.mom",
+          password: "password",
+        });
+        const deleteAcc = manager.deleteAccount("1");
+
+       expect(deleteAcc).toBeFalsy();
       });
     });
   });
