@@ -1,4 +1,3 @@
-import exp from "constants";
 import { AccountManager, Account } from "./account-manager.js";
 
 describe("Account Manager", () => {
