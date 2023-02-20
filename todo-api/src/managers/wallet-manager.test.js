@@ -1,90 +1,91 @@
-import exp from "constants";
 import { WalletManager } from "./wallet-manager.js";
 describe("Wallet manager", () => {
-    let manager;
+  let manager;
 
-    beforeEach(() => {
-        manager = new WalletManager();
+  beforeEach(() => {
+    manager = new WalletManager();
+  });
+
+  describe("wallet.length", () => {
+    it("should have two wallets now", () => {
+      const wallets = new WalletManager();
+      wallets.createWallet("john", 100);
+      wallets.createWallet("jane", 100);
+      expect(wallets.wallets.length).toBe(2);
     });
+  });
 
-    describe("wallet.accounts.length", () => {
-        it("should have two wallet accounts now", () =>{
-            const wallet = new WalletManager();
-            wallet.accounts.createAccount("john", 100);
-            wallet.accounts.createAccount("jane", 100);
-            expect(wallet.accounts.accounts.length).toBe(2);
-        });
+  describe("test_transfer", () => {
+    it("should transfer money from john to jane", () => {
+      const wallets = new WalletManager();
+      wallets.createWallet("john", 100);
+      wallets.createWallet("jane", 100);
+      const result = wallets.transfer("john", "jane", 50);
+
+      const john = wallets.findWallet("john");
+      const jane = wallets.findWallet("jane");
+
+      expect(result).toBeDefined();
+      expect(result.success).toBeTruthy();
+      expect(result.source).toMatch(john.name);
+      expect(result.destination).toMatch(jane.name);
+      expect(result.amount).toBe(50);
+      expect(john.balance).toBe(50);
+      expect(jane.balance).toBe(150);
+
+      const [johnTransaction] =
+        wallets.transactions.findWalletTransactions("john");
+      const [janeTransaction] =
+        wallets.transactions.findWalletTransactions("jane");
+
+      expect(johnTransaction).toBeTruthy();
+      expect(johnTransaction.wallet).toMatch(john.name);
+      expect(johnTransaction.amount).toBe(-50);
+      expect(janeTransaction).toBeTruthy();
+      expect(janeTransaction.wallet).toMatch(jane.name);
+      expect(janeTransaction.amount).toBe(50);
     });
+  });
 
-    describe("test_transfer", () =>{
-        it("should transfer money from john to jane", () =>{
-            const wallet = new WalletManager();
-            wallet.accounts.createAccount("john", 100);
-            wallet.accounts.createAccount("jane", 100);
-            const result = wallet.accounts.transfer("john", "jane", 50);
+  describe("test_transfer_insufficient", () => {
+    it("should fail", () => {
+      const wallets = new WalletManager();
+      wallets.createWallet("john", 0);
+      wallets.createWallet("jane", 0);
+      const transaction = wallets.transfer("john", "jane", 50);
 
-            const john = wallet.accounts.findAccount("john");
-            const jane = wallet.accounts.findAccount("jane");
+      expect(transaction.success).toBeFalsy();
+      expect(transaction.error).toBe("Insufficient balance");
 
-            expect(result).toBeDefined();
-            expect(result.success).toBeTruthy();
-            expect(result.source).toMatch(john.name);
-            expect(result.destination).toMatch(jane.name);
-            expect(result.amount).toBe(50);
-            expect(john.balance).toBe(50);
-            expect(jane.balance).toBe(150);
+      const john = wallets.findWallet("john");
+      const jane = wallets.findWallet("jane");
 
-            const [johnTransaction] = wallet.transactions.findAccountTransactions("john");
-            const [janeTransaction] = wallet.transactions.findAccountTransactions("jane");
-
-            expect(johnTransaction).toBeTruthy();
-            expect(johnTransaction.account).toMatch(john.name);
-            expect(johnTransaction.amount).toBe(-50);
-            expect(janeTransaction).toBeTruthy();
-            expect(janeTransaction.account).toMatch(jane.name);
-            expect(janeTransaction.amount).toBe(50);
-        });
+      expect(john.balance).toBe(0);
+      expect(jane.balance).toBe(0);
     });
+  });
 
-    describe("test_transfer_insufficient", () =>{
-        it("should fail", () =>{
-            const wallet = new WalletManager();
-            wallet.accounts.createAccount("john", 0);
-            wallet.accounts.createAccount("jane", 0);
-            const transaction = wallet.accounts.transfer("john", "jane", 50);
+  describe("test_transfer_to_nobody", () => {
+    it("should fail", () => {
+      const wallets = new WalletManager();
+      wallets.createWallet("jane", 100);
 
-            expect(transaction.success).toBeFalsy();
-            expect(transaction.error).toBe("Insufficient balance");
+      const transaction = wallets.transfer("jane", "john", 10);
 
-            const john = wallet.accounts.findAccount("john");
-            const jane = wallet.accounts.findAccount("jane");
-
-            expect(john.balance).toBe(0);
-            expect(jane.balance).toBe(0);
-        });
+      expect(transaction.success).toBeFalsy();
+      expect(transaction.error).toBe("Invalid destination wallet");
     });
+  });
 
-    describe("test_transfer_to_nobody", () =>{
-        it("should fail", () =>{
-            const wallet = new WalletManager();
-            wallet.accounts.createAccount("jane", 100);
+  describe("test_transfer_to_nobody", () => {
+    it("should fail", () => {
+      const wallets = new WalletManager();
+      wallets.createWallet("jane", 100);
 
-            const transaction = wallet.accounts.transfer("jane", "john", 10);
+      const transaction = wallets.transfer("john", "jane", 10);
 
-            expect(transaction.success).toBeFalsy();
-            expect(transaction.error).toBe("Invalid destination account");
-        });
+      expect(transaction.success).toBeFalsy();
+      expect(transaction.error).toBe("Invalid source wallet");
     });
-
-    describe("test_transfer_to_nobody", () =>{
-        it("should fail", () =>{
-            const wallet = new WalletManager();
-            wallet.accounts.createAccount("jane", 100);
-
-            const transaction = wallet.accounts.transfer("john", "jane", 10);
-
-            expect(transaction.success).toBeFalsy();
-            expect(transaction.error).toBe("Invalid source account");
-        });
-    });
+  });
 });

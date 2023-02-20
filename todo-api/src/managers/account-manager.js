@@ -29,25 +29,25 @@ class Account {
   }
 }
 
-class AccountManager{
-  constructor({ accounts } = {}){
+class AccountManager {
+  constructor({ accounts } = {}) {
     this.accounts = accounts || [];
   }
-  listAccounts(){
+  listAccounts() {
     return this.accounts;
   }
-  findAccountByUsername(username){
+  findAccountByUsername(username) {
     return this.accounts.find((account) => {
       return account.username === username;
     });
   }
-  isUsernameTaken(username){
+  isUsernameTaken(username) {
     return this.accounts.some((account) => account.username === username);
   }
-  createAccount({ id, username, password}){
+  createAccount({ id, username, password }) {
     if (this.isUsernameTaken(username)) {
       throw new Error("Username already taken");
-    };  
+    }
     const account = new Account({
       id: id || nanoid(),
       username: username,
@@ -56,12 +56,12 @@ class AccountManager{
     this.accounts.push(account);
     return account;
   }
-  deleteAccount(id){
-    const accountToDelete = this.accounts.findIndex((account) =>{
+  deleteAccount(id) {
+    const accountToDelete = this.accounts.findIndex((account) => {
       return account.id === id;
     });
-    if(accountToDelete === -1){
-     return false;
+    if (accountToDelete === -1) {
+      return false;
     }
     this.accounts.splice(accountToDelete, 1);
     return true;

@@ -154,8 +154,8 @@ describe("Account Manager", () => {
       });
     });
 
-    describe("Account.deleteAccount", () =>{
-      it("should delete account if account exists", () =>{
+    describe("Account.deleteAccount", () => {
+      it("should delete account if account exists", () => {
         const account = manager.createAccount({
           id: "50",
           username: "john.doe",
@@ -166,7 +166,7 @@ describe("Account Manager", () => {
         expect(deleteAcc).toBeTruthy();
       });
 
-      it("should not delete account that doesn't exist", () =>{
+      it("should not delete account that doesn't exist", () => {
         const account1 = manager.createAccount({
           id: "50",
           username: "john.doe",
@@ -184,7 +184,7 @@ describe("Account Manager", () => {
         });
         const deleteAcc = manager.deleteAccount("1");
 
-       expect(deleteAcc).toBeFalsy();
+        expect(deleteAcc).toBeFalsy();
       });
     });
   });

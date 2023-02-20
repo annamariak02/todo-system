@@ -1,87 +1,75 @@
 function transactionError(error, { source, destination, amount }) {
-    return { success: false, error, source, destination, amount };
+  return { success: false, error, source, destination, amount };
+}
+
+function transactionSuccess({ source, destination, amount }) {
+  return { success: true, source, destination, amount };
+}
+
+class WalletManager {
+  constructor({ wallets } = {}) {
+    this.wallets = wallets || [];
+    this.transactions = new TransactionLedger();
   }
-  
-  function transactionSuccess({ source, destination, amount }) {
-    return { success: true, source, destination, amount };
+  findWallet(wallet_name) {
+    return this.wallets.find((wallet) => {
+      return wallet.name === wallet_name;
+    });
   }
-  
-  class WalletManager{
-    constructor({ createAccountManager } = {}, { createTransactionLedger } = {}){
-      function createAccountManager(transactions) {
-        const accounts = [];
-    
-        function findAccount(account_name) {
-          return accounts.find((account) => {
-            return account.name === account_name;
-          });
-        }
-        function createAccount(account_name, starting_balance) {
-          accounts.push({
-            name: account_name,
-            balance: starting_balance,
-          });
-        }
-      function transfer(source, destination, amount) {
-        const source_account = findAccount(source);
-        const dest_account = findAccount(destination);
-    
-        if (source_account === undefined) {
-          return transactionError("Invalid source account", {
-            source,
-            destination,
-            amount,
-          });
-        }
-    
-        if (dest_account === undefined) {
-          return transactionError("Invalid destination account", {
-            source,
-            destination,
-            amount,
-          });
-        }
-    
-        if (source_account.balance < amount) {
-          return transactionError("Insufficient balance", {
-            source,
-            destination,
-            amount,
-          });
-        }
-    
-        source_account.balance = source_account.balance - amount;
-        dest_account.balance = dest_account.balance + amount;
-    
-        transactions.addTransaction({ account: source, amount: -amount }); // 🤷
-        transactions.addTransaction({ account: destination, amount });
-        return transactionSuccess({ source, destination, amount });
-      }
-    
-      return { accounts, findAccount, createAccount, transfer };
+  createWallet(wallet_name, starting_balance) {
+    this.wallets.push({
+      name: wallet_name,
+      balance: starting_balance,
+    });
+  }
+  transfer(source, destination, amount) {
+    const source_wallet = this.findWallet(source);
+    const dest_wallet = this.findWallet(destination);
+
+    if (source_wallet === undefined) {
+      return transactionError("Invalid source wallet", {
+        source,
+        destination,
+        amount,
+      });
+    }
+    if (dest_wallet === undefined) {
+      return transactionError("Invalid destination wallet", {
+        source,
+        destination,
+        amount,
+      });
+    }
+    if (source_wallet.balance < amount) {
+      return transactionError("Insufficient balance", {
+        source,
+        destination,
+        amount,
+      });
     }
 
-    function createTransactionLedger() {
-      const transactions = [];
-    
-      function addTransaction({ account, amount }) {
-        transactions.push({ account, amount, timestamp: new Date() });
-      }
-        
-      function findAccountTransactions(account) {
-        return transactions.filter((transaction) => {
-          return transaction.account === account;
-        });
-      }
-    
-      return { transactions, addTransaction, findAccountTransactions };
-    }
-  
-    const transactions = createTransactionLedger();
-    const accounts = createAccountManager(transactions);
-  
-    return { accounts, transactions };
+    source_wallet.balance = source_wallet.balance - amount;
+    dest_wallet.balance = dest_wallet.balance + amount;
+
+    this.transactions.addTransaction({ wallet: source, amount: -amount }); // 🤷
+    this.transactions.addTransaction({ wallet: destination, amount });
+    return transactionSuccess({ source, destination, amount });
   }
 }
-  
-export { WalletManager };
+
+class TransactionLedger {
+  constructor({ transactions } = {}) {
+    this.transactions = transactions || [];
+  }
+  addTransaction({ wallet, amount }) {
+    this.transactions.push({ wallet, amount, timestamp: new Date() });
+  }
+
+  findWalletTransactions(wallet) {
+    return this.transactions.filter((transaction) => {
+      return transaction.wallet === wallet;
+    });
+  }
+}
+
+export { WalletManager, TransactionLedger };
