@@ -79,6 +79,9 @@ select {
 /*end typography*/
 
 /*global styles*/
+body {
+  padding: 10px;
+}
 /*end global styles*/
 
 /*main styles*/
@@ -86,6 +89,7 @@ select {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-right: 10px;
 
   width: 32px;
   height: 32px;
@@ -97,6 +101,7 @@ select {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-right: 10px;
 
   width: 32px;
   height: 32px;
@@ -110,5 +115,13 @@ select {
 #delete{
   border: 0;
   background-color: white;
+  color: rgb(165, 5, 5);
+  font-size: 20px;
+  margin-left: 10px;
+}
+#list{
+  display: flex;
+  align-items: center;
+  width: fit-content;
 }
 /*end main styles*/

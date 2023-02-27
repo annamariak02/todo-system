@@ -1,9 +1,15 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 
-export default function TodoInput() {
+export default function TodoInput({ onKeyDown, inputRef }) {
   return (
     <div>
-      <input id="input" type="text" placeholder="What needs to be done?" />
+      <input
+        ref={inputRef}
+        id="input"
+        type="text"
+        placeholder="What needs to be done?"
+        onKeyDown={onKeyDown}
+      />
     </div>
   );
 }
