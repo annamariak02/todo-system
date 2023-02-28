@@ -6,11 +6,25 @@ export default function CheckButton({ handleTodoClick }) {
   const [checked, setChecked] = useState(true);
 
   if (checked) {
-    return <button id="unchecked"  onClick={function(event){setChecked(false); handleTodoClick()}}></button>;
+    return (
+      <button
+        id="unchecked"
+        onClick={function (event) {
+          setChecked(false);
+          handleTodoClick();
+        }}
+      ></button>
+    );
   }
 
   return (
-    <button id="checked" onClick={function(event){setChecked(true); handleTodoClick()}}>
+    <button
+      id="checked"
+      onClick={function (event) {
+        setChecked(true);
+        handleTodoClick();
+      }}
+    >
       <FontAwesomeIcon id="checkmark" icon={faCheckCircle}></FontAwesomeIcon>
     </button>
   );
