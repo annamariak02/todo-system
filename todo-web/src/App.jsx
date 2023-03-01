@@ -2,27 +2,17 @@ import React, { useState, useRef, useMemo } from "react";
 import TodoInput from "./TodoInput";
 import TodoList from "./TodoList";
 import { v4 as uuidv4 } from "uuid";
-// import ButtonGroup from "./ButtonGroup";
 
 function App() {
   const [todos, setTodos] = useState([]);
   const inputRef = useRef();
-  // const [tab, setTab] = useState('all')
+  const activeTodosNr = useMemo(()=>{
+    return Counter();
+  })
 
-
-  // function filterTodos(todos, tab) {
-  //   return todos.filter(todo =>{
-  //      if (tab === 'all'){
-  //          return true
-  //      }
-  //      else if (tab === 'active'){
-  //          return !todo.completed
-  //      }
-  //      else if (tab === 'completed'){
-  //          return todo.completed
-  //      }
-  //   })
-  //  }
+  function Counter(){
+    return todos.filter((todo) => !todo.complete).length
+  }
 
   function deleteTodo(id) {
     const newTodos = todos.filter((todo) => {
@@ -53,8 +43,7 @@ function App() {
       <h1>todos</h1>
       <TodoInput inputRef={inputRef} onKeyDown={handleKeyDown} />
       <TodoList todos={todos} toggleTodo={toggleTodo} deleteTodo={deleteTodo} />
-      {/* <div>{todos.filter((todo) => !todo.complete).length} items left</div> */}
-      {/* <ButtonGroup setTab={setTab} tab={tab} /> */}
+      <div>{activeTodosNr} items left</div>
     </>
   );
 }

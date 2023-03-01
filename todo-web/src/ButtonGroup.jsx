@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-export default function ButtonGroup({ setTab, tab }) {
+export default function ButtonGroup({ setTab }) {
   return (
     <div>
       <button onClick={()=> setTab('all')}>All</button>
