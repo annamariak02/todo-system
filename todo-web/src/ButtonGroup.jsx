@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+// import React from 'react'
 
-export default function ButtonGroup({ setTab }) {
-  return (
-    <div>
-      <button onClick={()=> setTab('all')}>All</button>
-      <button onClick={()=>setTab('active')}>Active</button>
-      <button onClick={()=>setTab('completed')}>Completed</button>
-    </div>
-  )
-}
+// export default function ButtonGroup({ all, active, completed}) {
+//   return (
+//     <div>
+//       <button onClick={all}>All</button>
+//       <button onClick={active}>Active</button>
+//       <button onClick={completed}>Completed</button>
+//     </div>
+//   )
+// }
